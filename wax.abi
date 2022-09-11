@@ -1,0 +1,353 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.2",
+    "types": [],
+    "structs": [
+        {
+            "name": "ASSET_TO_MINT",
+            "base": "",
+            "fields": [
+                {
+                    "name": "template_id",
+                    "type": "int32"
+                },
+                {
+                    "name": "tokens_to_back",
+                    "type": "asset[]"
+                }
+            ]
+        },
+        {
+            "name": "SYMBOLPAIR",
+            "base": "",
+            "fields": [
+                {
+                    "name": "listing_symbol",
+                    "type": "symbol"
+                },
+                {
+                    "name": "settlement_symbol",
+                    "type": "symbol"
+                },
+                {
+                    "name": "delphi_pair_name",
+                    "type": "name"
+                },
+                {
+                    "name": "invert_delphi_pair",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "TOKEN",
+            "base": "",
+            "fields": [
+                {
+                    "name": "token_contract",
+                    "type": "name"
+                },
+                {
+                    "name": "token_symbol",
+                    "type": "symbol"
+                }
+            ]
+        },
+        {
+            "name": "addconftoken",
+            "base": "",
+            "fields": [
+                {
+                    "name": "token_contract",
+                    "type": "name"
+                },
+                {
+                    "name": "token_symbol",
+                    "type": "symbol"
+                }
+            ]
+        },
+        {
+            "name": "adddelphi",
+            "base": "",
+            "fields": [
+                {
+                    "name": "delphi_pair_name",
+                    "type": "name"
+                },
+                {
+                    "name": "invert_delphi_pair",
+                    "type": "bool"
+                },
+                {
+                    "name": "listing_symbol",
+                    "type": "symbol"
+                },
+                {
+                    "name": "settlement_symbol",
+                    "type": "symbol"
+                }
+            ]
+        },
+        {
+            "name": "balances_s",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "quantities",
+                    "type": "asset[]"
+                }
+            ]
+        },
+        {
+            "name": "config_s",
+            "base": "",
+            "fields": [
+                {
+                    "name": "version",
+                    "type": "string"
+                },
+                {
+                    "name": "dutch_auc_counter",
+                    "type": "uint64"
+                },
+                {
+                    "name": "supported_tokens",
+                    "type": "TOKEN[]"
+                },
+                {
+                    "name": "supported_symbol_pairs",
+                    "type": "SYMBOLPAIR[]"
+                },
+                {
+                    "name": "atomicassets_account",
+                    "type": "name"
+                },
+                {
+                    "name": "delphioracle_account",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "dutch_auc",
+            "base": "",
+            "fields": [
+                {
+                    "name": "auc_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "collection_name",
+                    "type": "name"
+                },
+                {
+                    "name": "assets_to_mint",
+                    "type": "ASSET_TO_MINT"
+                },
+                {
+                    "name": "listing_price",
+                    "type": "asset"
+                },
+                {
+                    "name": "settlement_symbol",
+                    "type": "symbol"
+                },
+                {
+                    "name": "price_recipient",
+                    "type": "name"
+                },
+                {
+                    "name": "auth_required",
+                    "type": "bool"
+                },
+                {
+                    "name": "fee_rate",
+                    "type": "float32"
+                },
+                {
+                    "name": "account_limit",
+                    "type": "uint32"
+                },
+                {
+                    "name": "account_limit_cooldown",
+                    "type": "uint32"
+                },
+                {
+                    "name": "max_claimable",
+                    "type": "uint64"
+                },
+                {
+                    "name": "current_claimed",
+                    "type": "uint64"
+                },
+                {
+                    "name": "start_time",
+                    "type": "uint32"
+                },
+                {
+                    "name": "end_time",
+                    "type": "uint32"
+                },
+                {
+                    "name": "display_data",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "dutchstats_s",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "counter",
+                    "type": "uint32"
+                },
+                {
+                    "name": "last_claim_time",
+                    "type": "uint32"
+                },
+                {
+                    "name": "used_nonces",
+                    "type": "uint64[]"
+                }
+            ]
+        },
+        {
+            "name": "init",
+            "base": "",
+            "fields": []
+        },
+        {
+            "name": "rambalances_s",
+            "base": "",
+            "fields": [
+                {
+                    "name": "collection_name",
+                    "type": "name"
+                },
+                {
+                    "name": "byte_balance",
+                    "type": "int32"
+                }
+            ]
+        },
+        {
+            "name": "setversion",
+            "base": "",
+            "fields": [
+                {
+                    "name": "new_version",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "whitelists_s",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "withdraw",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "token_to_withdraw",
+                    "type": "asset"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "addconftoken",
+            "type": "addconftoken",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "adddelphi",
+            "type": "adddelphi",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "init",
+            "type": "init",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setversion",
+            "type": "setversion",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "withdraw",
+            "type": "withdraw",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "balances",
+            "type": "balances_s",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "config",
+            "type": "config_s",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "dutch_auc",
+            "type": "dutch_auc",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "dutchstats",
+            "type": "dutchstats_s",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "rambalances",
+            "type": "rambalances_s",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "whitelists",
+            "type": "whitelists_s",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "kv_tables": {},
+    "ricardian_clauses": [],
+    "variants": [],
+    "action_results": []
+}
