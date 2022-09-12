@@ -23,10 +23,14 @@ public:
         // constructor, can't call function on delploying.
     }
 
-    ACTION init()
+    ACTION init(name fee_receiver, string game_name)
     {
         require_auth(get_self());
         config.get_or_create(get_self(), config_s{});
+        config_s current_config = config.get();
+        current_config.fee_receiver = fee_receiver;
+        current_config.game_name = game_name;
+        config.set(current_config, get_self());
     }
 
     ACTION setconfig(name fee_receiver, string game_name)
@@ -83,11 +87,11 @@ public:
     {
         require_auth(player);
         uint8_t max_amount = 10;
-        check(cycle > 0 && amount > 0 && amount <= max_amount, "Function params are wrong. The maximum amount is " + max_amount);
+        check(cycle > 0 && amount > 0 && amount <= max_amount, "Function params are wrong. ");
         auto cycles_config_itr = cycles_config.require_find(cycle, "Wrong cycle.");
         check(now() >= cycles_config_itr->start_time, "Cycle hasn't started yet.");
-        auto balance_itr = balances.require_find(player, "You haven't deposited the tokens");
-        check(balance_itr->amount >= cycles_config_itr->cost_to_play.amount * amount, "You don't have enough balance.");
+        auto balance_itr = balances.require_find(player.value, "You haven't deposited the tokens");
+        check(balance_itr->quantity.amount >= cycles_config_itr->cost_to_play.amount * amount, "You don't have enough balance.");
         config_s current_config = config.get();
 
         // start distribution/joining
@@ -103,21 +107,21 @@ public:
                                      {
             entry.index = 1;
             entry.player = player; 
-            entry.player = false; });
+            entry.payed = false; });
             }
             else
             {
                 auto availavle_index = cycles_table.available_primary_key();
                 // game fee - our 7-10 % commission for playing.
                 auto service_fee = cycles_config_itr->cost_to_play;
-                service_fee.amount = ceil((double)service_fee.amount / 100 * current_config->game_fee);
-                transferWAX(current_config->fee_receiver, service_fee);
+                service_fee.amount = ceil((double)service_fee.amount / 100 * current_config.game_fee);
+                transferWAX(current_config.fee_receiver, service_fee);
                 // referal fee
                 auto referal_fee = cycles_config_itr->cost_to_play;
-                referal_fee.amount = floor((double)referal_fee.amount / 100 * current_config->referal_bonus);
+                referal_fee.amount = floor((double)referal_fee.amount / 100 * current_config.referal_bonus);
                 if (refferal != name("") && isRefferalPlaying(refferal, cycle))
                 {
-                    transferWAX(current_config->fee_receiver, referal_fee);
+                    transferWAX(current_config.fee_receiver, referal_fee);
                 }
                 else
                 {
@@ -128,7 +132,7 @@ public:
                 auto parent_index = get_parent_index(availavle_index);
                 auto cycles_table_parent_itr = cycles_table.require_find(parent_index, "Something went wrong");
                 auto parent_payment = cycles_config_itr->cost_to_play;
-                parent_payment.amount = floor((double)referal_fee.amount / 100 * (100 - current_config->game_fee - current_config->referal_bonus));
+                parent_payment.amount = floor((double)referal_fee.amount / 100 * (100 - current_config.game_fee - current_config.referal_bonus));
                 transferWAX(cycles_table_parent_itr->player, parent_payment);
                 cycles_table.modify(cycles_table_parent_itr, same_payer, [&](auto &_balance)
                                     { _balance.payed = true; });
@@ -141,7 +145,7 @@ public:
         cycles_t cycles_table = get_cycle_table(cycle);
         auto indexByName = cycles_table.get_index<"player"_n>();
         auto itrToolByName = indexByName.lower_bound(refferal.value);
-        if (itrToolByName != cycles_table.end())
+        if (itrToolByName != indexByName.end())
         {
             return true;
         }
@@ -268,7 +272,7 @@ private:
         name player;
         bool payed;
         uint64_t get_key2() const { return player.value; };
-        uint64_t primary_key() const { return cycle; };
+        uint64_t primary_key() const { return index; };
     };
     typedef multi_index<"cycles"_n, cycles_s,
                         indexed_by<"player"_n, const_mem_fun<cycles_s, uint64_t, &cycles_s::get_key2>>>
@@ -286,8 +290,8 @@ private:
     TABLE config_s
     {
         string version = "0.0.1";
-        name fee_receiver = _self;
-        string game_name = _self;
+        name fee_receiver = name("");
+        string game_name = "game_name";
         uint16_t referal_bonus = 18;
         uint16_t game_fee = 7;
         name atomicassets_account = atomicassets::ATOMICASSETS_ACCOUNT;
@@ -300,10 +304,10 @@ private:
 
     balances_t balances = balances_t(get_self(), get_self().value);
     config_t config = config_t(get_self(), get_self().value);
-    config_t cycles_config = config_t(get_self(), get_self().value);
+    cycles_config_t cycles_config = cycles_config_t(get_self(), get_self().value);
 
     cycles_t get_cycle_table(uint16_t cycle)
     {
-        return cycles_t(_self, cycle);
+        return cycles_t(get_self(), cycle);
     }
 };

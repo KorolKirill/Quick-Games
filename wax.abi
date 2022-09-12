@@ -4,92 +4,6 @@
     "types": [],
     "structs": [
         {
-            "name": "ASSET_TO_MINT",
-            "base": "",
-            "fields": [
-                {
-                    "name": "template_id",
-                    "type": "int32"
-                },
-                {
-                    "name": "tokens_to_back",
-                    "type": "asset[]"
-                }
-            ]
-        },
-        {
-            "name": "SYMBOLPAIR",
-            "base": "",
-            "fields": [
-                {
-                    "name": "listing_symbol",
-                    "type": "symbol"
-                },
-                {
-                    "name": "settlement_symbol",
-                    "type": "symbol"
-                },
-                {
-                    "name": "delphi_pair_name",
-                    "type": "name"
-                },
-                {
-                    "name": "invert_delphi_pair",
-                    "type": "bool"
-                }
-            ]
-        },
-        {
-            "name": "TOKEN",
-            "base": "",
-            "fields": [
-                {
-                    "name": "token_contract",
-                    "type": "name"
-                },
-                {
-                    "name": "token_symbol",
-                    "type": "symbol"
-                }
-            ]
-        },
-        {
-            "name": "addconftoken",
-            "base": "",
-            "fields": [
-                {
-                    "name": "token_contract",
-                    "type": "name"
-                },
-                {
-                    "name": "token_symbol",
-                    "type": "symbol"
-                }
-            ]
-        },
-        {
-            "name": "adddelphi",
-            "base": "",
-            "fields": [
-                {
-                    "name": "delphi_pair_name",
-                    "type": "name"
-                },
-                {
-                    "name": "invert_delphi_pair",
-                    "type": "bool"
-                },
-                {
-                    "name": "listing_symbol",
-                    "type": "symbol"
-                },
-                {
-                    "name": "settlement_symbol",
-                    "type": "symbol"
-                }
-            ]
-        },
-        {
             "name": "balances_s",
             "base": "",
             "fields": [
@@ -98,8 +12,8 @@
                     "type": "name"
                 },
                 {
-                    "name": "quantities",
-                    "type": "asset[]"
+                    "name": "quantity",
+                    "type": "asset"
                 }
             ]
         },
@@ -112,16 +26,20 @@
                     "type": "string"
                 },
                 {
-                    "name": "dutch_auc_counter",
-                    "type": "uint64"
+                    "name": "fee_receiver",
+                    "type": "name"
                 },
                 {
-                    "name": "supported_tokens",
-                    "type": "TOKEN[]"
+                    "name": "game_name",
+                    "type": "string"
                 },
                 {
-                    "name": "supported_symbol_pairs",
-                    "type": "SYMBOLPAIR[]"
+                    "name": "referal_bonus",
+                    "type": "uint16"
+                },
+                {
+                    "name": "game_fee",
+                    "type": "uint16"
                 },
                 {
                     "name": "atomicassets_account",
@@ -134,109 +52,106 @@
             ]
         },
         {
-            "name": "dutch_auc",
+            "name": "cycles_config_s",
             "base": "",
             "fields": [
                 {
-                    "name": "auc_id",
-                    "type": "uint64"
-                },
-                {
-                    "name": "collection_name",
-                    "type": "name"
-                },
-                {
-                    "name": "assets_to_mint",
-                    "type": "ASSET_TO_MINT"
-                },
-                {
-                    "name": "listing_price",
-                    "type": "asset"
-                },
-                {
-                    "name": "settlement_symbol",
-                    "type": "symbol"
-                },
-                {
-                    "name": "price_recipient",
-                    "type": "name"
-                },
-                {
-                    "name": "auth_required",
-                    "type": "bool"
-                },
-                {
-                    "name": "fee_rate",
-                    "type": "float32"
-                },
-                {
-                    "name": "account_limit",
-                    "type": "uint32"
-                },
-                {
-                    "name": "account_limit_cooldown",
-                    "type": "uint32"
-                },
-                {
-                    "name": "max_claimable",
-                    "type": "uint64"
-                },
-                {
-                    "name": "current_claimed",
-                    "type": "uint64"
+                    "name": "cycle",
+                    "type": "uint16"
                 },
                 {
                     "name": "start_time",
                     "type": "uint32"
                 },
                 {
-                    "name": "end_time",
-                    "type": "uint32"
-                },
-                {
-                    "name": "display_data",
-                    "type": "string"
+                    "name": "cost_to_play",
+                    "type": "asset"
                 }
             ]
         },
         {
-            "name": "dutchstats_s",
+            "name": "cycles_s",
             "base": "",
             "fields": [
                 {
-                    "name": "account",
+                    "name": "index",
+                    "type": "uint64"
+                },
+                {
+                    "name": "player",
                     "type": "name"
                 },
                 {
-                    "name": "counter",
-                    "type": "uint32"
-                },
-                {
-                    "name": "last_claim_time",
-                    "type": "uint32"
-                },
-                {
-                    "name": "used_nonces",
-                    "type": "uint64[]"
+                    "name": "payed",
+                    "type": "bool"
                 }
             ]
         },
         {
             "name": "init",
             "base": "",
-            "fields": []
-        },
-        {
-            "name": "rambalances_s",
-            "base": "",
             "fields": [
                 {
-                    "name": "collection_name",
+                    "name": "fee_receiver",
                     "type": "name"
                 },
                 {
-                    "name": "byte_balance",
-                    "type": "int32"
+                    "name": "game_name",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "joingame",
+            "base": "",
+            "fields": [
+                {
+                    "name": "player",
+                    "type": "name"
+                },
+                {
+                    "name": "cycle",
+                    "type": "uint16"
+                },
+                {
+                    "name": "amount",
+                    "type": "uint64"
+                },
+                {
+                    "name": "refferal",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "setconfig",
+            "base": "",
+            "fields": [
+                {
+                    "name": "fee_receiver",
+                    "type": "name"
+                },
+                {
+                    "name": "game_name",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "setcyclecfg",
+            "base": "",
+            "fields": [
+                {
+                    "name": "cycle",
+                    "type": "uint16"
+                },
+                {
+                    "name": "start_time",
+                    "type": "uint32"
+                },
+                {
+                    "name": "cost_to_play",
+                    "type": "asset"
                 }
             ]
         },
@@ -249,56 +164,32 @@
                     "type": "string"
                 }
             ]
-        },
-        {
-            "name": "whitelists_s",
-            "base": "",
-            "fields": [
-                {
-                    "name": "account",
-                    "type": "name"
-                }
-            ]
-        },
-        {
-            "name": "withdraw",
-            "base": "",
-            "fields": [
-                {
-                    "name": "owner",
-                    "type": "name"
-                },
-                {
-                    "name": "token_to_withdraw",
-                    "type": "asset"
-                }
-            ]
         }
     ],
     "actions": [
-        {
-            "name": "addconftoken",
-            "type": "addconftoken",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "adddelphi",
-            "type": "adddelphi",
-            "ricardian_contract": ""
-        },
         {
             "name": "init",
             "type": "init",
             "ricardian_contract": ""
         },
         {
-            "name": "setversion",
-            "type": "setversion",
+            "name": "joingame",
+            "type": "joingame",
             "ricardian_contract": ""
         },
         {
-            "name": "withdraw",
-            "type": "withdraw",
+            "name": "setconfig",
+            "type": "setconfig",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setcyclecfg",
+            "type": "setcyclecfg",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setversion",
+            "type": "setversion",
             "ricardian_contract": ""
         }
     ],
@@ -318,29 +209,15 @@
             "key_types": []
         },
         {
-            "name": "dutch_auc",
-            "type": "dutch_auc",
+            "name": "cycles",
+            "type": "cycles_s",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
         },
         {
-            "name": "dutchstats",
-            "type": "dutchstats_s",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "rambalances",
-            "type": "rambalances_s",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "whitelists",
-            "type": "whitelists_s",
+            "name": "cyclescfg",
+            "type": "cycles_config_s",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
