@@ -1,0 +1,12 @@
+{"msg": "succeeded", "keys": 
+{"active_key": {"public":
+ "EOS6cFaD2HuD2nGX4umB1oujZqYkU2dq3N2UsCSdjjKd2r5nJ4bk2",
+ "private": "5KgQj9LyCFXTo2hyzffzLkXhjE8AE8WR8kcthk74c4mAt84Vsnx"}, 
+"owner_key": {"public": "EOS7Z8za5y8cQy1GMbezwDCbTwmYBhvJj9NmYAuUXxn6xvzAcXMgE",
+ "private": "5KKAAsRDo1erto69YerrbeFx881QTjevmg1CRYSpcgnEn8hWvkm"}}, "account": "testinggame1"}
+
+{"msg": "succeeded", "keys":
+ {"active_key": {"public": "EOS8PiDAEnb7XZWovKKYRqmq7kQfMN9vKbmTh8Jxjo5eZaevGneEt", 
+"private": "5HxJz3HiyPkEVeADVtpKKxqYZK997jJfE34mGwWpiHYAD6USh7A"}, 
+"owner_key": {"public": "EOS5JuF2SGqjKPZvDJZxFKdZn9uzptHMFkQRo6Y6HLgNibUNTEfbt",
+ "private": "5J5sA9ZzEr9DGftv4WKRrVvfyZxWcDkEbWtvUjhCi3tqNcdo3ce"}}, "account": "advancedtest"}

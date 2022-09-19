@@ -80,10 +80,6 @@
                 {
                     "name": "player",
                     "type": "name"
-                },
-                {
-                    "name": "payed",
-                    "type": "bool"
                 }
             ]
         },

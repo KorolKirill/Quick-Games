@@ -106,12 +106,16 @@ public:
                 cycles_table.emplace(player, [&](auto &entry)
                                      {
             entry.index = 1;
-            entry.player = player; 
-            entry.payed = false; });
+            entry.player = player; });
             }
             else
             {
                 auto availavle_index = cycles_table.available_primary_key();
+                cycles_table.emplace(player, [&](auto &entry)
+                                     {
+                entry.index = availavle_index;
+                entry.player = player; });
+
                 // game fee - our 7-10 % commission for playing.
                 auto service_fee = cycles_config_itr->cost_to_play;
                 service_fee.amount = ceil((double)service_fee.amount / 100 * current_config.game_fee);
@@ -121,21 +125,19 @@ public:
                 referal_fee.amount = floor((double)referal_fee.amount / 100 * current_config.referal_bonus);
                 if (refferal != name("") && isRefferalPlaying(refferal, cycle))
                 {
-                    transferWAX(current_config.fee_receiver, referal_fee);
+                    transferWAX(refferal, referal_fee);
                 }
                 else
                 {
-                    transferWAX(refferal, referal_fee);
+                    transferWAX(current_config.fee_receiver, referal_fee);
                 }
                 // parent player payment
 
                 auto parent_index = get_parent_index(availavle_index);
                 auto cycles_table_parent_itr = cycles_table.require_find(parent_index, "Something went wrong");
                 auto parent_payment = cycles_config_itr->cost_to_play;
-                parent_payment.amount = floor((double)referal_fee.amount / 100 * (100 - current_config.game_fee - current_config.referal_bonus));
+                parent_payment.amount = floor((double)parent_payment.amount / 100 * (100 - current_config.game_fee - current_config.referal_bonus));
                 transferWAX(cycles_table_parent_itr->player, parent_payment);
-                cycles_table.modify(cycles_table_parent_itr, same_payer, [&](auto &_balance)
-                                    { _balance.payed = true; });
             }
         }
     }
@@ -270,7 +272,6 @@ private:
     {
         uint64_t index; // available_primary_key()
         name player;
-        bool payed;
         uint64_t get_key2() const { return player.value; };
         uint64_t primary_key() const { return index; };
     };
