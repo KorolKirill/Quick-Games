@@ -81,6 +81,10 @@ public:
         config.set(current_config, get_self());
     }
 
+    ACTION log(string text)
+    {
+    }
+
     // Join the cycle.
     // amount is limited to 10 per trx
     ACTION joingame(name player, uint16_t cycle, uint64_t amount, name refferal)
@@ -104,9 +108,9 @@ public:
             if (availavle_index == 1 || availavle_index == 0)
             {
                 cycles_table.emplace(player, [&](auto &entry)
-                                     {
-            entry.index = 1;
-            entry.player = player; });
+                                     {entry.index = 1;
+                    entry.player = player; });
+                log_a.send("First entry.");
             }
             else
             {
@@ -123,13 +127,15 @@ public:
                 // referal fee
                 auto referal_fee = cycles_config_itr->cost_to_play;
                 referal_fee.amount = floor((double)referal_fee.amount / 100 * current_config.referal_bonus);
-                if (refferal != name("") && isRefferalPlaying(refferal, cycle))
+                if (isRefferalPlaying(refferal, cycle) && refferal != player)
                 {
                     transferWAX(refferal, referal_fee);
+                    internal_add_statistic(refferal, referal_fee, asset(0, WAX_symbol));
                 }
                 else
                 {
                     transferWAX(current_config.fee_receiver, referal_fee);
+                    log_a.send("Refferal is not found or hasn't joined the cycle.");
                 }
                 // parent player payment
 
@@ -138,6 +144,8 @@ public:
                 auto parent_payment = cycles_config_itr->cost_to_play;
                 parent_payment.amount = floor((double)parent_payment.amount / 100 * (100 - current_config.game_fee - current_config.referal_bonus));
                 transferWAX(cycles_table_parent_itr->player, parent_payment);
+
+                internal_add_statistic(cycles_table_parent_itr->player, asset(0, WAX_symbol), parent_payment);
             }
         }
     }
@@ -190,6 +198,8 @@ public:
     }
 
 private:
+    symbol WAX_symbol =  symbol(symbol_code("WAX"), 8);
+
     uint64_t get_parent_index(uint64_t current_index)
     {
         if (current_index % 2 == 0)
@@ -199,6 +209,28 @@ private:
         else
         {
             return (current_index - 1) / 2;
+        }
+    }
+
+    // creates table if not already created.
+    void internal_add_statistic(name user, asset invite_profit, asset game_profit)
+    {
+        auto statistic_itr = statistic.find(user.value);
+        if (statistic_itr == statistic.end())
+        {
+            statistic.emplace(user, [&](auto &entry)
+                                         { 
+                                            entry.player = user; 
+                                            entry.invite_profit = invite_profit; 
+                                            entry.game_profit = game_profit; 
+                                         });
+        }
+        else
+        {
+            statistic.modify(statistic_itr, user, [&](auto &entry)
+                                        {
+                         entry.invite_profit += invite_profit; 
+                        entry.game_profit += game_profit;  });
         }
     }
 
@@ -288,13 +320,22 @@ private:
     };
     typedef multi_index<name("cyclescfg"), cycles_config_s> cycles_config_t;
 
+    TABLE statistic_s
+    {
+        name player;
+        asset invite_profit;
+        asset game_profit;
+        uint64_t primary_key() const { return player.value; };
+    };
+    typedef multi_index<name("statistic"), statistic_s> statistic_t;
+
     TABLE config_s
     {
         string version = "0.0.1";
         name fee_receiver = name("");
         string game_name = "game_name";
-        uint16_t referal_bonus = 18;
-        uint16_t game_fee = 7;
+        uint16_t referal_bonus = 15;
+        uint16_t game_fee = 10;
         name atomicassets_account = atomicassets::ATOMICASSETS_ACCOUNT;
         name delphioracle_account = delphioracle::DELPHIORACLE_ACCOUNT;
     };
@@ -303,6 +344,7 @@ private:
     // https://github.com/EOSIO/eosio.cdt/issues/280
     typedef multi_index<name("config"), config_s> config_t_for_abi;
 
+    statistic_t statistic = statistic_t(get_self(), get_self().value);
     balances_t balances = balances_t(get_self(), get_self().value);
     config_t config = config_t(get_self(), get_self().value);
     cycles_config_t cycles_config = cycles_config_t(get_self(), get_self().value);
@@ -311,4 +353,7 @@ private:
     {
         return cycles_t(get_self(), cycle);
     }
+
+    using log_action_w = action_wrapper<"log"_n, &wax::log>;
+    log_action_w log_a =  log_action_w(get_self(), {get_self(), "active"_n});
 };

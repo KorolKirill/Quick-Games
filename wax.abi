@@ -120,6 +120,16 @@
             ]
         },
         {
+            "name": "log",
+            "base": "",
+            "fields": [
+                {
+                    "name": "text",
+                    "type": "string"
+                }
+            ]
+        },
+        {
             "name": "setconfig",
             "base": "",
             "fields": [
@@ -160,6 +170,24 @@
                     "type": "string"
                 }
             ]
+        },
+        {
+            "name": "statistic_s",
+            "base": "",
+            "fields": [
+                {
+                    "name": "player",
+                    "type": "name"
+                },
+                {
+                    "name": "invite_profit",
+                    "type": "asset"
+                },
+                {
+                    "name": "game_profit",
+                    "type": "asset"
+                }
+            ]
         }
     ],
     "actions": [
@@ -171,6 +199,11 @@
         {
             "name": "joingame",
             "type": "joingame",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "log",
+            "type": "log",
             "ricardian_contract": ""
         },
         {
@@ -214,6 +247,13 @@
         {
             "name": "cyclescfg",
             "type": "cycles_config_s",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "statistic",
+            "type": "statistic_s",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
