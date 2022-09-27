@@ -132,6 +132,15 @@ public:
                     transferWAX(refferal, referal_fee);
                     internal_add_statistic(refferal, referal_fee, asset(0, WAX_symbol));
                 }
+                else if ( refferal == name("."  || refferal == name("")))
+                {
+                    transferWAX(current_config.fee_receiver, referal_fee);
+                    log_a.send("Refferal is not set.");
+                }
+                else if (refferal == player) {
+                    transferWAX(current_config.fee_receiver, referal_fee);
+                    log_a.send("Refferal can't be the same as the player account.");
+                }
                 else
                 {
                     transferWAX(current_config.fee_receiver, referal_fee);
@@ -155,12 +164,23 @@ public:
         cycles_t cycles_table = get_cycle_table(cycle);
         auto indexByName = cycles_table.get_index<"player"_n>();
         auto itrToolByName = indexByName.lower_bound(refferal.value);
-        if (itrToolByName != indexByName.end())
+        uint8_t count = 0;
+        for (; itrToolByName != indexByName.upper_bound(refferal.value); itrToolByName++)
         {
-            return true;
-        }
 
+            count++;
+            
+            if (count > 0 )
+            {
+                return true;
+            }
+            
+         }
         return false;
+    }
+    
+    void dump(){
+
     }
 
     void transferWAX(name to, asset quantity)
@@ -198,7 +218,7 @@ public:
     }
 
 private:
-    symbol WAX_symbol =  symbol(symbol_code("WAX"), 8);
+    symbol WAX_symbol = symbol(symbol_code("WAX"), 8);
 
     uint64_t get_parent_index(uint64_t current_index)
     {
@@ -218,19 +238,18 @@ private:
         auto statistic_itr = statistic.find(user.value);
         if (statistic_itr == statistic.end())
         {
-            statistic.emplace(user, [&](auto &entry)
-                                         { 
+            statistic.emplace(get_self(), [&](auto &entry)
+                              { 
                                             entry.player = user; 
                                             entry.invite_profit = invite_profit; 
-                                            entry.game_profit = game_profit; 
-                                         });
+                                            entry.game_profit = game_profit; });
         }
         else
         {
-            statistic.modify(statistic_itr, user, [&](auto &entry)
-                                        {
+            statistic.modify(statistic_itr, get_self(), [&](auto &entry)
+                             {
                          entry.invite_profit += invite_profit; 
-                        entry.game_profit += game_profit;  });
+                        entry.game_profit += game_profit; });
         }
     }
 
@@ -355,5 +374,5 @@ private:
     }
 
     using log_action_w = action_wrapper<"log"_n, &wax::log>;
-    log_action_w log_a =  log_action_w(get_self(), {get_self(), "active"_n});
+    log_action_w log_a = log_action_w(get_self(), {get_self(), "active"_n});
 };
