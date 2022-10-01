@@ -108,7 +108,8 @@ public:
             if (availavle_index == 1 || availavle_index == 0)
             {
                 cycles_table.emplace(player, [&](auto &entry)
-                                     {entry.index = 1;
+                                     {
+                                        entry.index = 1;
                     entry.player = player; });
                 log_a.send("First entry.");
             }
@@ -178,15 +179,12 @@ public:
          }
         return false;
     }
-    
-    void dump(){
 
-    }
 
     void transferWAX(name to, asset quantity)
     {
         // todo add custom MEMO with link to the website.
-        std::string memo = "";
+        std::string memo = "Join sweet world game! sweetworlds.io";
 
         action{
             permission_level{get_self(), "active"_n},
@@ -351,8 +349,8 @@ private:
     TABLE config_s
     {
         string version = "0.0.1";
-        name fee_receiver = name("");
-        string game_name = "game_name";
+        name fee_receiver = name("sweetbank.gm");
+        string game_name = "sweet world";
         uint16_t referal_bonus = 15;
         uint16_t game_fee = 10;
         name atomicassets_account = atomicassets::ATOMICASSETS_ACCOUNT;
