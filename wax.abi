@@ -4,6 +4,16 @@
     "types": [],
     "structs": [
         {
+            "name": "addtowl",
+            "base": "",
+            "fields": [
+                {
+                    "name": "players",
+                    "type": "name[]"
+                }
+            ]
+        },
+        {
             "name": "balances_s",
             "base": "",
             "fields": [
@@ -188,9 +198,24 @@
                     "type": "asset"
                 }
             ]
+        },
+        {
+            "name": "whitelist_s",
+            "base": "",
+            "fields": [
+                {
+                    "name": "player",
+                    "type": "name"
+                }
+            ]
         }
     ],
     "actions": [
+        {
+            "name": "addtowl",
+            "type": "addtowl",
+            "ricardian_contract": ""
+        },
         {
             "name": "init",
             "type": "init",
@@ -254,6 +279,13 @@
         {
             "name": "statistic",
             "type": "statistic_s",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "whitelist",
+            "type": "whitelist_s",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

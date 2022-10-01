@@ -42,6 +42,26 @@ public:
         config.set(current_config, get_self());
     }
 
+    ACTION addtowl(vector<name> players)
+    {
+        require_auth(get_self());
+        for (int i = 0; i < players.size(); i++)
+        {
+            name user = players[i];
+            auto whitelist_itr = whitelist.find(user.value);
+            if (whitelist_itr == whitelist.end())
+            {
+                whitelist.emplace(get_self(), [&](auto &entry)
+                                      {
+                entry.player = user;});
+            }
+            else
+            {
+                log_a.send("user already in table");
+            }
+        }
+    }
+
     ACTION setcyclecfg(uint16_t cycle,
                        uint32_t start_time,
                        asset cost_to_play)
@@ -93,7 +113,17 @@ public:
         uint8_t max_amount = 10;
         check(cycle > 0 && amount > 0 && amount <= max_amount, "Function params are wrong. ");
         auto cycles_config_itr = cycles_config.require_find(cycle, "Wrong cycle.");
-        check(now() >= cycles_config_itr->start_time, "Cycle hasn't started yet.");
+        auto whitelist_itr = whitelist.find(player.value);
+        if (whitelist_itr != whitelist.end())
+        {
+            // pressale for whitelist.
+            check(now() >= cycles_config_itr->start_time - 900, "Cycle hasn't started yet.");
+        }
+        else 
+        {
+            check(now() >= cycles_config_itr->start_time, "Cycle hasn't started yet.");
+        }
+        
         auto balance_itr = balances.require_find(player.value, "You haven't deposited the tokens");
         check(balance_itr->quantity.amount >= cycles_config_itr->cost_to_play.amount * amount, "You don't have enough balance.");
         config_s current_config = config.get();
@@ -133,12 +163,13 @@ public:
                     transferWAX(refferal, referal_fee);
                     internal_add_statistic(refferal, referal_fee, asset(0, WAX_symbol));
                 }
-                else if ( refferal == name("."  || refferal == name("")))
+                else if (refferal == name("." || refferal == name("")))
                 {
                     transferWAX(current_config.fee_receiver, referal_fee);
                     log_a.send("Refferal is not set.");
                 }
-                else if (refferal == player) {
+                else if (refferal == player)
+                {
                     transferWAX(current_config.fee_receiver, referal_fee);
                     log_a.send("Refferal can't be the same as the player account.");
                 }
@@ -170,16 +201,14 @@ public:
         {
 
             count++;
-            
-            if (count > 0 )
+
+            if (count > 0)
             {
                 return true;
             }
-            
-         }
+        }
         return false;
     }
-
 
     void transferWAX(name to, asset quantity)
     {
@@ -317,6 +346,15 @@ private:
 
     typedef multi_index<name("balances"), balances_s> balances_t;
 
+    TABLE whitelist_s
+    {
+        name player;
+
+        uint64_t primary_key() const { return player.value; };
+    };
+
+    typedef multi_index<name("whitelist"), whitelist_s> whitelist_t;
+
     TABLE cycles_s
     {
         uint64_t index; // available_primary_key()
@@ -324,6 +362,7 @@ private:
         uint64_t get_key2() const { return player.value; };
         uint64_t primary_key() const { return index; };
     };
+
     typedef multi_index<"cycles"_n, cycles_s,
                         indexed_by<"player"_n, const_mem_fun<cycles_s, uint64_t, &cycles_s::get_key2>>>
         cycles_t;
@@ -365,6 +404,7 @@ private:
     balances_t balances = balances_t(get_self(), get_self().value);
     config_t config = config_t(get_self(), get_self().value);
     cycles_config_t cycles_config = cycles_config_t(get_self(), get_self().value);
+    whitelist_t whitelist = whitelist_t(get_self(), get_self().value);
 
     cycles_t get_cycle_table(uint16_t cycle)
     {
