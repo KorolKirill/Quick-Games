@@ -114,7 +114,7 @@ public:
         check(cycle > 0 && amount > 0 && amount <= max_amount, "Function params are wrong. ");
         auto cycles_config_itr = cycles_config.require_find(cycle, "Wrong cycle.");
         auto whitelist_itr = whitelist.find(player.value);
-        if (whitelist_itr != whitelist.end())
+        if (whitelist_itr != whitelist.end() && cycle == 1)
         {
             // pressale for whitelist.
             check(now() >= cycles_config_itr->start_time - 900, "Cycle hasn't started yet.");
